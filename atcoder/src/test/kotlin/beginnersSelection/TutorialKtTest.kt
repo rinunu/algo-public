@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 /**
  * https://atcoder.jp/contests/abs/tasks/practice_1
  */
-class TutorialTest {
+class TutorialKtTest {
     @Test
     fun p1() {
         val res = TestUtil.testWithStdio(
