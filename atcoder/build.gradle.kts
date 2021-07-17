@@ -1,19 +1,22 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 // バージョンについてはこちら
 // https://qiita.com/nak435/items/2cab8cc9918017b9564b
 
 plugins {
-    kotlin("jvm") version "1.3.71"
+    kotlin("jvm") version "1.5.21"
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     testImplementation(project(":testutil"))
     testImplementation(kotlin("test"))
     testImplementation("org.assertj:assertj-core:3.20.2")
+}
 
-    testImplementation("org.junit.platform:junit-platform-launcher:1.7.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
-    testImplementation("org.junit.vintage:junit-vintage-engine:5.7.2")
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    apiVersion = "1.3"
+    languageVersion = "1.3"
 }
 
 tasks.test {
