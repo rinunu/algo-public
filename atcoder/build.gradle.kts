@@ -11,6 +11,9 @@ dependencies {
     testImplementation(project(":testutil"))
     testImplementation(kotlin("test"))
     testImplementation("org.assertj:assertj-core:3.20.2")
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.1")
 }
 
 val compileKotlin: KotlinCompile by tasks

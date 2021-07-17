@@ -43,6 +43,3 @@ class Abc049C(private val logging: Boolean = true) {
 fun main() {
     Abc049C(false).solve()
 }
-
-
-

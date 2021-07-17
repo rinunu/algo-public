@@ -1,9 +1,30 @@
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.io.PrintStream
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
+
+/**
+ * 指定したデータを標準出力から読み込み、標準出力を関数の戻り値として返す
+ */
+fun replaceStdio(
+    inputStream: InputStream,
+    outputStream: OutputStream,
+    f: () -> Unit
+): String {
+    val originalOut = System.out
+    val originalIn = System.`in`
+    try {
+        val outputPrintStream = PrintStream(outputStream)
+
+        System.setIn(inputStream)
+        System.setOut(outputPrintStream)
+        f()
+        return outputStream.toString()
+    } finally {
+        // これで戻せてるかなぁ?
+        System.setIn(originalIn)
+        System.setOut(originalOut)
+    }
+}
 
 object TestUtil {
     fun test(
@@ -21,22 +42,10 @@ object TestUtil {
         input: String,
         f: () -> Unit
     ): String {
-        val originalOut = System.out
-        val originalIn = System.`in`
-        try {
-            val inputStream = ByteArrayInputStream(input.toByteArray())
-            val outputStream = ByteArrayOutputStream()
-            val outputPrintStream = PrintStream(outputStream)
-
-            System.setIn(inputStream)
-            System.setOut(outputPrintStream)
-            f()
-            return outputStream.toString()
-        } finally {
-            // これで戻せてるかなぁ?
-            System.setIn(originalIn)
-            System.setOut(originalOut)
-        }
+        val inputStream = ByteArrayInputStream(input.toByteArray())
+        val outputStream = ByteArrayOutputStream()
+        replaceStdio(inputStream, outputStream, f)
+        return outputStream.toString()
     }
 
     fun test(
