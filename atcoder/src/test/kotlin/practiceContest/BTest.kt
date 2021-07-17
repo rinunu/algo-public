@@ -48,4 +48,38 @@ class BTest {
             }
         }
     }
+
+    @Test
+    fun p3() {
+        interactive(
+            this::test,
+            initialInput = "5 7",
+            expected = "! ABCDE"
+        ) {
+            when (it) {
+                "? B A" -> ">"
+                "? C B" -> ">"
+                "? D C" -> ">"
+                "? E D" -> ">"
+                else -> TODO(it)
+            }
+        }
+    }
+
+    @Test
+    fun p4() {
+        interactive(
+            this::test,
+            initialInput = "5 7",
+            expected = "! EDCBA"
+        ) {
+            when (it) {
+                "? B A" -> "<"
+                "? C B" -> "<"
+                "? D C" -> "<"
+                "? E D" -> "<"
+                else -> TODO(it)
+            }
+        }
+    }
 }
