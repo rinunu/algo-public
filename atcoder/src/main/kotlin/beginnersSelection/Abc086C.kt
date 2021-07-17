@@ -20,9 +20,11 @@ class Abc086C(private val logging: Boolean = true) {
         // 0,0 => 0,1 は 1, 3, 5, ... 回移動
         // 0,0 => 3,1 は 4, 6, 8, ... 回移動
 
-        val n = readLine()!!.toInt()
+        val r = System.`in`.bufferedReader()
+
+        val n = r.readLine()!!.toInt()
         val items = listOf(A(0, 0, 0)) + List(n) {
-            val (t, x, y) = readLine()!!.split(" ").map { it.toInt() }
+            val (t, x, y) = r.readLine()!!.split(" ").map { it.toInt() }
             A(t, x, y)
         }
         log(items)
