@@ -18,8 +18,9 @@ dependencies {
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
-    apiVersion = "1.1"
-    languageVersion = "1.1"
+    // TODO 1.1 はサポートしてない。 言語本体のバージョンをさげる?
+    apiVersion = "1.3"
+    languageVersion = "1.3"
 }
 
 tasks.test {
