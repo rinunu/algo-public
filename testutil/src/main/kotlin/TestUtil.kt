@@ -26,6 +26,19 @@ fun replaceStdio(
     }
 }
 
+/**
+ * 指定したデータを標準出力から読み込み、標準出力を関数の戻り値として返す
+ */
+fun captureStdio(
+    input: String,
+    f: () -> Unit
+): String {
+    val inputStream = ByteArrayInputStream(input.toByteArray())
+    val outputStream = ByteArrayOutputStream()
+    replaceStdio(inputStream, outputStream, f)
+    return outputStream.toString()
+}
+
 object TestUtil {
     fun test(
         input: String,
@@ -38,14 +51,12 @@ object TestUtil {
     /**
      * 指定したデータを標準出力から読み込み、標準出力を関数の戻り値として返す
      */
+    @Deprecated("", ReplaceWith("captureStdio(input, f)"))
     fun testWithStdio(
         input: String,
         f: () -> Unit
     ): String {
-        val inputStream = ByteArrayInputStream(input.toByteArray())
-        val outputStream = ByteArrayOutputStream()
-        replaceStdio(inputStream, outputStream, f)
-        return outputStream.toString()
+        return captureStdio(input, f)
     }
 
     fun test(
