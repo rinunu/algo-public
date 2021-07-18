@@ -2,6 +2,22 @@ package joi2007ho
 
 import kotlin.math.absoluteValue
 
+private typealias Pos2 = Int
+
+private val Pos2.x: Int
+    get() {
+        return this / 10000
+    }
+
+private val Pos2.y: Int
+    get() {
+        return this % 10000
+    }
+
+fun makePos2(x: Int, y: Int): Pos2 {
+    return x * 10000 + y
+}
+
 class Joi2007HoC(private val logging: Boolean = true) {
     private fun log(f: () -> Any) {
         if (logging) {
@@ -16,7 +32,42 @@ class Joi2007HoC(private val logging: Boolean = true) {
     }
 
     fun solve() {
-        solve3()
+        solve4()
+    }
+
+    /**
+     * ループの中でオブジェクトを生成するのをやめる
+     *
+     * 780 ms	55548 KB
+     */
+    fun solve4() {
+        val n = readLine()!!.toInt()
+        val poss = List(n) {
+            val (x, y) = readIntArray()
+            makePos2(x, y)
+        }.toSortedSet()
+
+        var maxArea = 0
+        for (a1 in poss) {
+            for (a2 in poss.tailSet(a1)) {
+                if (a1 == a2) {
+                    continue
+                }
+
+                val adx = a1.x - a2.x
+                val ady = a1.y - a2.y
+
+                // a とペアで正方形を作る b
+                // 逆方向にも正方形ができるが、それは別のループで処理される
+                val b1 = makePos2(a1.x + ady, a1.y - adx)
+                val b2 = makePos2(a2.x + ady, a2.y - adx)
+                if (poss.contains(b1) && poss.contains(b2)) {
+                    maxArea = area(a1, a2).coerceAtLeast(maxArea)
+                    log { "ok $a1 $a2 $b1 $b2" }
+                }
+            }
+        }
+        println(maxArea)
     }
 
     /**
@@ -224,6 +275,16 @@ class Joi2007HoC(private val logging: Boolean = true) {
      * 一辺の情報を渡すと面積を計算する
      */
     private fun area(a1: Pos, a2: Pos): Int {
+        val x = a1.x - a2.x
+        val y = a1.y - a2.y
+        // ルートをとった後、2乗するので
+        return x * x + y * y
+    }
+
+    /**
+     * 一辺の情報を渡すと面積を計算する
+     */
+    private fun area(a1: Pos2, a2: Pos2): Int {
         val x = a1.x - a2.x
         val y = a1.y - a2.y
         // ルートをとった後、2乗するので
