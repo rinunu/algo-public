@@ -3,24 +3,66 @@ package joi2007ho
 import kotlin.math.absoluteValue
 
 class Joi2007HoC(private val logging: Boolean = true) {
-    private fun log(a: Any) {
+    private fun log(f: () -> Any) {
         if (logging) {
-            System.err.println(a)
+            System.err.println(f())
         }
     }
 
-    data class Pos(val x: Int, val y: Int)
+    data class Pos(val x: Int, val y: Int) : Comparable<Pos> {
+        override fun compareTo(other: Pos): Int {
+            return (x * 5000 + y) - (other.x * 5000 + other.y)
+        }
+    }
 
     fun solve() {
+        solve3()
+    }
+
+    /**
+     * MLE がでるので、データ構造を1つにする
+     * 816 ms, 55676 KB
+     */
+    fun solve3() {
+        val n = readLine()!!.toInt()
+        val poss = List(n) {
+            val (x, y) = readIntArray()
+            Pos(x, y)
+        }.toSortedSet()
+
+        var maxArea = 0
+        for (a1 in poss) {
+            for (a2 in poss.tailSet(a1)) {
+                if (a1 == a2) {
+                    continue
+                }
+
+                val adx = a1.x - a2.x
+                val ady = a1.y - a2.y
+
+                // a とペアで正方形を作る b
+                // 逆方向にも正方形ができるが、それは別のループで処理される
+                val b1 = Pos(a1.x + ady, a1.y - adx)
+                val b2 = Pos(a2.x + ady, a2.y - adx)
+                if (poss.contains(b1) && poss.contains(b2)) {
+                    maxArea = area(a1, a2).coerceAtLeast(maxArea)
+                    log { "ok $a1 $a2 $b1 $b2" }
+                }
+            }
+        }
+        println(maxArea)
+    }
+
+    fun solve2() {
         val n = readLine()!!.toInt()
         val posList = Array(n) {
             val (x, y) = readIntArray()
             Pos(x, y)
         }
-        println(solve2(n, posList))
+        println(solve2_1(n, posList))
     }
 
-    private fun solve2(n: Int, posList: Array<Pos>): Int {
+    private fun solve2_1(n: Int, posList: Array<Pos>): Int {
         // 2つの点を選ぶ
         // その線を使って正方形になるものがあるかを探す
 
@@ -63,7 +105,7 @@ class Joi2007HoC(private val logging: Boolean = true) {
                     val ib2 = findPosIndex(b2X, b2Y, posList)
                     if (ib2 != -1) {
                         maxArea = area(a1, a2).coerceAtLeast(maxArea)
-                        log("ok! b ${a1} ${a2}")
+                        log { "ok! b ${a1} ${a2}" }
                         continue
                     }
                 }
@@ -78,7 +120,7 @@ class Joi2007HoC(private val logging: Boolean = true) {
                     val ic2 = findPosIndex(c2X, c2Y, posList)
                     if (ic2 != -1) {
                         maxArea = area(a1, a2).coerceAtLeast(maxArea)
-                        log("ok! c ${a1} ${a2}")
+                        log { "ok! c ${a1} ${a2}" }
                     }
                 }
             }
@@ -182,9 +224,8 @@ class Joi2007HoC(private val logging: Boolean = true) {
      * 一辺の情報を渡すと面積を計算する
      */
     private fun area(a1: Pos, a2: Pos): Int {
-        val x = (a1.x - a2.x)
-        val y = (a1.y - a2.y)
-
+        val x = a1.x - a2.x
+        val y = a1.y - a2.y
         // ルートをとった後、2乗するので
         return x * x + y * y
     }

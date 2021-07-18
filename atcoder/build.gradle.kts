@@ -20,6 +20,9 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     apiVersion = "1.3"
     languageVersion = "1.3"
+
+    // // Main.kt:25:34: error: calls to static methods in Java interfaces are prohibited in JVM target 1.6. Recompile with '-jvm-target 1.8'
+    jvmTarget = "1.6"
 }
 
 tasks.test {
