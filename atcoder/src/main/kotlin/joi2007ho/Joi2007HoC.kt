@@ -9,72 +9,76 @@ class Joi2007HoC(private val logging: Boolean = true) {
         }
     }
 
+    data class Pos(val x: Int, val y: Int)
+
     fun solve() {
         val n = readLine()!!.toInt()
         val posList = Array(n) {
-            readIntArray()
+            val (x, y) = readIntArray()
+            Pos(x, y)
         }
         println(solve2(n, posList))
     }
 
-    private fun solve2(n: Int, posList: Array<IntArray>): Int {
+    private fun solve2(n: Int, posList: Array<Pos>): Int {
         // 2つの点を選ぶ
         // その線を使って正方形になるものがあるかを探す
 
-        // 最大 5000
+        // 最大 5000 エントリー
         val x2PosIndexList = posList.mapIndexed { i, it ->
             i to it
         }.groupBy({
-            it.second[0]
+            it.second.x
         }, {
             it.first
         })
 
-        fun findPosIndex(x: Int, y: Int, posList: Array<IntArray>): Int {
+        fun findPosIndex(x: Int, y: Int, posList: Array<Pos>): Int {
             val posIndexList = x2PosIndexList[x]
                 ?: return -1
 
             return posIndexList.indexOfFirst { i ->
-                posList[i][0] == x && posList[i][1] == y
+                posList[i].x == x && posList[i].y == y
             }
         }
+
+        // これをやるとぎりぎり MLE を回避できる。。
+        System.gc()
 
         var maxArea = 0
         for (ia1 in 0 until n) {
             for (ia2 in (ia1 + 1) until n) {
                 val a1 = posList[ia1]
                 val a2 = posList[ia2]
-                val ax = a1[0] - a2[0]
-                val ay = a1[1] - a2[1]
+                val ax = a1.x - a2.x
+                val ay = a1.y - a2.y
 
-                val b1X = a1[0] + ay
-                val b1Y = a1[1] - ax
-                val b2X = a2[0] + ay
-                val b2Y = a2[1] - ax
-
-                log("$ax $ay")
-
+                // a とペアで正方形を作る b
+                val b1X = a1.x + ay
+                val b1Y = a1.y - ax
+                val b2X = a2.x + ay
+                val b2Y = a2.y - ax
                 val ib1 = findPosIndex(b1X, b1Y, posList)
                 if (ib1 != -1) {
                     val ib2 = findPosIndex(b2X, b2Y, posList)
                     if (ib2 != -1) {
-
                         maxArea = area(a1, a2).coerceAtLeast(maxArea)
-                        log("ok! b ${a1.toList()} ${a2.toList()}")
+                        log("ok! b ${a1} ${a2}")
                         continue
                     }
                 }
 
-                val c1X = a1[0] - ay
-                val c1Y = a1[1] + ax
-                val c2X = a2[0] - ay
-                val c2Y = a2[1] + ax
+                // a とペアで正方形を作る c
+                val c1X = a1.x - ay
+                val c1Y = a1.y + ax
+                val c2X = a2.x - ay
+                val c2Y = a2.y + ax
                 val ic1 = findPosIndex(c1X, c1Y, posList)
                 if (ic1 != -1) {
                     val ic2 = findPosIndex(c2X, c2Y, posList)
                     if (ic2 != -1) {
                         maxArea = area(a1, a2).coerceAtLeast(maxArea)
-                        log("ok! c ${a1.toList()} ${a2.toList()}")
+                        log("ok! c ${a1} ${a2}")
                     }
                 }
             }
@@ -84,7 +88,6 @@ class Joi2007HoC(private val logging: Boolean = true) {
 
     private fun solve1(n: Int, posList: Array<IntArray>): Int {
         // メモリ制限が厳しい
-
 
         // 正方形とはなんなのか?
         // - 4辺の長さが同じ
@@ -176,11 +179,11 @@ class Joi2007HoC(private val logging: Boolean = true) {
     }
 
     /**
-     * 一辺の情報を渡す
+     * 一辺の情報を渡すと面積を計算する
      */
-    private fun area(a1: IntArray, a2: IntArray): Int {
-        val x = (a1[0] - a2[0])
-        val y = (a1[1] - a2[1])
+    private fun area(a1: Pos, a2: Pos): Int {
+        val x = (a1.x - a2.x)
+        val y = (a1.y - a2.y)
 
         // ルートをとった後、2乗するので
         return x * x + y * y
