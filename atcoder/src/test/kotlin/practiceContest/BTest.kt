@@ -17,6 +17,7 @@ class BTest {
             expected = "! BAC"
         ) {
             when (it) {
+                "? B C" -> "<"
                 "? B A" -> "<"
                 "? A B" -> ">"
                 "? C B" -> ">"
@@ -36,48 +37,20 @@ class BTest {
         ) {
             when (it) {
                 "? B A" -> "<"
+                "? B C" -> "<"
                 "? A B" -> ">"
                 "? C B" -> ">"
                 "? A C" -> "<"
                 "? C A" -> ">"
                 "? D A" -> ">"
                 "? D C" -> ">"
+                "? C D" -> "<"
                 "? E C" -> ">"
                 "? E D" -> ">"
-                else -> TODO(it)
-            }
-        }
-    }
-
-    @Test
-    fun p3() {
-        interactive(
-            this::test,
-            initialInput = "5 7",
-            expected = "! ABCDE"
-        ) {
-            when (it) {
-                "? B A" -> ">"
-                "? C B" -> ">"
-                "? D C" -> ">"
-                "? E D" -> ">"
-                else -> TODO(it)
-            }
-        }
-    }
-
-    @Test
-    fun p4() {
-        interactive(
-            this::test,
-            initialInput = "5 7",
-            expected = "! EDCBA"
-        ) {
-            when (it) {
-                "? B A" -> "<"
-                "? C B" -> "<"
-                "? D C" -> "<"
-                "? E D" -> "<"
+                "? D E" -> "<"
+                "? B E" -> "<"
+                "? A E" -> "<"
+                "? A D" -> "<"
                 else -> TODO(it)
             }
         }
