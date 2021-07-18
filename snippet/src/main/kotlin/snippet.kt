@@ -1,5 +1,14 @@
 // コピペして使うよ
 
+private fun IntArray.indexOf(start: Int, v: Int): Int {
+    for (i in start until this.size) {
+        if (this[i] == v) {
+            return i
+        }
+    }
+    return -1
+}
+
 private fun readIntArray(): IntArray {
     return readLine()!!.split(" ").map { it.toInt() }
         .toIntArray()
