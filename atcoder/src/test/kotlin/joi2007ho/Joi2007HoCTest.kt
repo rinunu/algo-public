@@ -28,6 +28,6 @@ class Joi2007HoCTest {
         ) {
             test()
         }
-        assertEquals("10", res)
+        assertEquals("10\n", res)
     }
 }
